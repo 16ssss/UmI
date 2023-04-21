@@ -1,2 +1,2 @@
-# YoumI
-YOUmI 저장소
+# UmI
+UmI 저장소
