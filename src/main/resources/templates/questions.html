@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang=""ko" xmlns:th=""http://www.thymeleaf.org">
+    <head></head>
+    <body>
+        <!--form method="post" th:object="${questions}"" action="/MBTI/questions"-->
+            <table>
+                <tr th:each="question, stat : ${questions}">
+                    <form method="post" action="/MBTI/questions">
+                        <td ><input  id="seq" name="seq" type="text" th:value="${question.seq}" readonly></td>
+                        <td ><input id="type" name="type"  type="text" th:value="${question.type}"></td>
+                        <td><input id="leftPhrase" name="leftPhrase"  type="text" th:value="${question.leftPhrase}"></td>
+                        <td><input id="leftImg" name="leftImg"  type="text" th:value="${question.leftImg}"></td>
+                        <td><input id="rightPhrase" name="rightPhrase"  type="text" th:value="${question.rightPhrase}"></td>
+                        <td><input id="rightImg" name="rightImg"  type="text" th:value="${question.rightImg}"></td>
+                        <td>
+                            <textarea id="question" name="question" rows="5" cols="100" th:value="${question.question}" th:text="${question.question}"></textarea>
+                            <input type="submit">
+                        </td>
+                        
+                    </form>
+                </tr>
+            </table>
+            
+        <!--/form-->
+    </body>
+</html>

@@ -1,0 +1,4 @@
+[submodule "src/main/resources/config-file"]
+	path = src/main/resources/config-file
+	url = https://github.com/16ssss/config-file
+	branch = main
