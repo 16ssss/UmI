@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,eclipse,git,database,macos,windows,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,eclipse,git,database,macos,windows,intellij+all
 
+
+
 ### Database ###
 *.accdb
 *.db
@@ -246,6 +248,7 @@ $RECYCLE.BIN/
 
 # Ignore Gradle GUI config
 gradle-app.setting
+gradle/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
