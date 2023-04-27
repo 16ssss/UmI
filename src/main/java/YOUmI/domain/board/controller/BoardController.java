@@ -40,9 +40,9 @@ public class BoardController {
         System.out.println(createdNo);
 
         // 에러 응답
-        if(createdNo == -1) {
+        if (createdNo == -Integer.parseInt(FAILURE.DUPLICATE_RESOURCE.getCode())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseDTO.builder().result(FAILURE.DUPLICATE_RESOURCE).build());
-        }else if(createdNo < 0){
+        } else if (createdNo < 0) {
             return ResponseEntity.badRequest().body(ResponseDTO.builder().result(FAILURE.FAILURE).build());
         }
 

@@ -5,6 +5,7 @@ import YOUmI.domain.board.model.dto.BoardUpdateRequestDTO;
 import YOUmI.domain.board.model.entity.Board;
 import YOUmI.domain.board.repository.BoardRepository;
 import YOUmI.domain.board.service.BoardService;
+import YOUmI.util.enumeration.FAILURE;
 import YOUmI.util.enumeration.YN;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
 
         // 게시판 이름이 중복인지 확인해야한다.(추가필요)
         if (boardRepository.findByBoardNameAndDeletedYN(requestDTO.getBoardName(), YN.N.getYN()).isPresent()) {
-            return -1;
+            return -Integer.parseInt(FAILURE.DUPLICATE_RESOURCE.getCode());
         }
 
         // 게시판 생성
