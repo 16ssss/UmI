@@ -37,7 +37,6 @@ public class BoardController {
 
         // 서비스 호출
         int createdNo = boardService.createBoard(requestDTO);
-        System.out.println(createdNo);
 
         // 에러 응답
         if (createdNo == -Integer.parseInt(FAILURE.DUPLICATE_RESOURCE.getCode())) {
