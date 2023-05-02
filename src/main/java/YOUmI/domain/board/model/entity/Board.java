@@ -24,25 +24,25 @@ import javax.persistence.*;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQUENCE")
-    @Column(name = "board_no")
+    @Column(name = "board_no", nullable = false)
     private Integer boardNo;
 
-    @Column(name = "board_name")
+    @Column(name = "board_name", nullable = false, unique = true)
     private String boardName;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private java.util.Date createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_date")
+    @Column(name = "modified_date", nullable = false)
     private java.util.Date modifiedDate;
 
     @Column(name = "board_described")
     private String boardDescribed;
 
-    @Column(name = "deleted_yn")
+    @Column(name = "deleted_yn", nullable = false)
     private char deletedYN;
 
     @Temporal(TemporalType.TIMESTAMP)

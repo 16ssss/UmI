@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
     Optional<Board> findByBoardNameAndDeletedYN(String boardName, char deletedYN);
+
+    Optional<Board> findByBoardNoAndDeletedYN(int boardNo, char deletedYN);
 }

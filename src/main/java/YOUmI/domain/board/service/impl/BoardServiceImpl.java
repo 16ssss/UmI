@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 
 @Service
@@ -59,7 +60,28 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public boolean updateBoard(int boardNo, BoardUpdateRequestDTO boardUpdateRequestDTO) {
-        return false;
+        Optional<Board> boardOptional = boardRepository.findByBoardNoAndDeletedYN(boardNo, YN.N.getYN());
+        // 게시판이 존재하는 지 확인
+        if (boardOptional.isEmpty()) {
+            return false;
+        }
+        Board updateBoard = boardOptional.get();
+        // 게시판 이름 변경
+        if (boardUpdateRequestDTO.getUpdatedBoardName() != null) {
+            // 만약 게시판 이름이 중복되는 경우 불가능
+            if (boardRepository.findByBoardNameAndDeletedYN(boardUpdateRequestDTO.getUpdatedBoardName(), YN.N.getYN()).isPresent()) {
+                return false;
+            }
+            updateBoard.setBoardName(boardUpdateRequestDTO.getUpdatedBoardName());
+        }
+        // 게시판 설명 변경
+        if (boardUpdateRequestDTO.getUpdatedBoardDescribed() != null) {
+            updateBoard.setBoardDescribed(boardUpdateRequestDTO.getUpdatedBoardDescribed());
+        }
+        // 변경 일자 저장
+        updateBoard.setModifiedDate(new Date());
+        return true;
     }
 }
