@@ -1,4 +1,4 @@
-package YOUmI.domain.board.model.dto;
+package YOUmI.domain.board.model.dto.request;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
