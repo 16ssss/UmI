@@ -1,18 +1,27 @@
 package YOUmI.domain.board.service.impl;
 
-import YOUmI.domain.board.model.dto.BoardCreateRequestDTO;
-import YOUmI.domain.board.model.dto.BoardUpdateRequestDTO;
+import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
+import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
+import YOUmI.domain.board.model.dto.request.PagingDTO;
+import YOUmI.domain.board.model.dto.response.BoardGetResponseDTO;
 import YOUmI.domain.board.model.entity.Board;
 import YOUmI.domain.board.repository.BoardRepository;
 import YOUmI.domain.board.service.BoardService;
 import YOUmI.util.enumeration.FAILURE;
-import YOUmI.util.enumeration.YN;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,6 +31,28 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
+    /**
+     * @param pagingDTO
+     * @return 페이징 처리된 Board
+     * todo: 권한에 따라 접근 가능한 게시판만 조회 가능하도록 변경해야 함.
+     */
+    @Override
+    public PagedModel<EntityModel<BoardGetResponseDTO>> getBoardList(PagingDTO pagingDTO) {
+        // 회원의 권한 가져오기 (민우님에게 받아오기)
+        List<String> memberRoleList = new ArrayList<>();
+        memberRoleList.add("ROLE_I");
+
+        Pageable pageable = pagingDTO.getPageable();
+        PagedResourcesAssembler<BoardGetResponseDTO> assembler = pagingDTO.getAssembler();
+
+        // 사용자가 접근할 수 있는 게시판 목록 조회
+        Page<Board> pageBoard = boardRepository.findAllByMemberRole(pageable, memberRoleList, false);
+
+        // dto로 변환
+        List<BoardGetResponseDTO> boards = pageBoard.map(BoardGetResponseDTO::of).getContent();
+        return assembler.toModel(new PageImpl<>(boards, pageable, pageBoard.getTotalElements()));
+    }
+
     @Override
     @Transactional
     public int createBoard(BoardCreateRequestDTO requestDTO) {
@@ -29,7 +60,7 @@ public class BoardServiceImpl implements BoardService {
         // 단순히 엔티티에서 처리할 수 있는 로직은 엔티티, 다른 엔티티와 협업이 필요한 경우 service를 통해서 협업한다.
 
         // 게시판 이름이 중복인지 확인해야한다.(추가필요)
-        if (boardRepository.findByBoardNameAndDeletedYN(requestDTO.getBoardName(), YN.N.getYN()).isPresent()) {
+        if (boardRepository.findByBoardNameAndDeletedYN(requestDTO.getBoardName(), false).isPresent()) {
             return -Integer.parseInt(FAILURE.DUPLICATE_RESOURCE.getCode());
         }
 
@@ -39,7 +70,7 @@ public class BoardServiceImpl implements BoardService {
                 .boardDescribed(requestDTO.getBoardDescribed())
                 .createdDate(new Date())
                 .modifiedDate(new Date())
-                .deletedYN(YN.N.getYN())
+                .deletedYN(false)
                 .build();
 
         try {
@@ -62,7 +93,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public boolean updateBoard(int boardNo, BoardUpdateRequestDTO boardUpdateRequestDTO) {
-        Optional<Board> boardOptional = boardRepository.findByBoardNoAndDeletedYN(boardNo, YN.N.getYN());
+        Optional<Board> boardOptional = boardRepository.findByBoardNoAndDeletedYN(boardNo, false);
         // 게시판이 존재하는 지 확인
         if (boardOptional.isEmpty()) {
             return false;
@@ -71,7 +102,7 @@ public class BoardServiceImpl implements BoardService {
         // 게시판 이름 변경
         if (boardUpdateRequestDTO.getUpdatedBoardName() != null) {
             // 만약 게시판 이름이 중복되는 경우 불가능
-            if (boardRepository.findByBoardNameAndDeletedYN(boardUpdateRequestDTO.getUpdatedBoardName(), YN.N.getYN()).isPresent()) {
+            if (boardRepository.findByBoardNameAndDeletedYN(boardUpdateRequestDTO.getUpdatedBoardName(), false).isPresent()) {
                 return false;
             }
             updateBoard.setBoardName(boardUpdateRequestDTO.getUpdatedBoardName());
@@ -84,4 +115,6 @@ public class BoardServiceImpl implements BoardService {
         updateBoard.setModifiedDate(new Date());
         return true;
     }
+
+
 }

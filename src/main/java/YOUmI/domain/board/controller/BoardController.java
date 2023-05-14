@@ -1,8 +1,10 @@
 package YOUmI.domain.board.controller;
 
 import YOUmI.common.dto.ResponseDTO;
-import YOUmI.domain.board.model.dto.BoardCreateRequestDTO;
-import YOUmI.domain.board.model.dto.BoardUpdateRequestDTO;
+import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
+import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
+import YOUmI.domain.board.model.dto.request.PagingDTO;
+import YOUmI.domain.board.model.dto.response.BoardGetResponseDTO;
 import YOUmI.domain.board.service.BoardService;
 import YOUmI.util.enumeration.FAILURE;
 import YOUmI.util.enumeration.SUCCESS;
@@ -10,6 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +30,29 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "게시판", description = "게시판 관련 COMMAND API")
 public class BoardController {
     private final BoardService boardService;
+
+    @GetMapping(value = "")
+    @Operation(summary = "게시판 조회", description = "일반 사용자는 권한에 맞는 게시판 리스트을 조회할 수 있습니다.", method = "GET")
+    public ResponseEntity<ResponseDTO> getBoardList(
+            @PageableDefault(size = 1, page = 0) Pageable pageable
+            , PagedResourcesAssembler<BoardGetResponseDTO> assembler
+    ) {
+        // dto로 변환
+        PagingDTO pagingDTO = PagingDTO.builder()
+                .pageable(pageable)
+                .assembler(assembler)
+                .build();
+
+        // 서비스 호출
+        PagedModel<EntityModel<BoardGetResponseDTO>> boardList = boardService.getBoardList(pagingDTO);
+
+        // 응답
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .result(SUCCESS.SUCCESS)
+                .resultObject(boardList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE})
 //    @ApiOperation(value = "", notes = "게시판을 등록합니다.")

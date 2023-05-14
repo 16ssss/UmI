@@ -1,10 +1,13 @@
 package YOUmI.domain.board.model.entity;
 
 
+import YOUmI.common.converter.BooleanToYNConverter;
 import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -42,11 +45,33 @@ public class Board {
     @Column(name = "board_described")
     private String boardDescribed;
 
+    @Convert(converter = BooleanToYNConverter.class)
     @Column(name = "deleted_yn", nullable = false)
-    private char deletedYN;
+    private boolean deletedYN;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_date")
     private java.util.Date deletedDate;
 
+    @OneToMany(mappedBy = "boardRollPK.board")
+    private List<BoardRole> boardRollList = new ArrayList<>();
+
+
+    /**
+     * 권한 추가
+     *
+     * @param boardRoll 권한 추가는 관리자만 가능합니다.
+     */
+    private void addBoardRoll(BoardRole boardRoll) {
+        this.boardRollList.add(boardRoll);
+    }
+
+    /**
+     * 권한 제거
+     *
+     * @param boardRoll 권한 제거는 관리자만 가능합니다.
+     */
+    private void removeBoardRoll(BoardRole boardRoll) {
+        this.boardRollList.remove(boardRoll);
+    }
 }
