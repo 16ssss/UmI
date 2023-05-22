@@ -2,6 +2,7 @@ package YOUmI.domain.board.model.entity;
 
 
 import YOUmI.common.converter.BooleanToYNConverter;
+import YOUmI.domain.board.model.vo.BoardRolePK;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -53,25 +54,26 @@ public class Board {
     @Column(name = "deleted_date")
     private java.util.Date deletedDate;
 
-    @OneToMany(mappedBy = "boardRollPK.board")
-    private List<BoardRole> boardRollList = new ArrayList<>();
+    @OneToMany(mappedBy = "boardRollPK.board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardRole> boardRoleList = new ArrayList<>();
 
 
     /**
      * 권한 추가
      *
-     * @param boardRoll 권한 추가는 관리자만 가능합니다.
+     * @param boardRole 권한 추가는 관리자만 가능합니다.
      */
-    private void addBoardRoll(BoardRole boardRoll) {
-        this.boardRollList.add(boardRoll);
+    public void addBoardRole(String boardRole) {
+
     }
 
     /**
      * 권한 제거
-     *
-     * @param boardRoll 권한 제거는 관리자만 가능합니다.
+     * 권한 제거는 관리자만 가능합니다.
+     * @param removeRole 삭제할 권한 명
      */
-    private void removeBoardRoll(BoardRole boardRoll) {
-        this.boardRollList.remove(boardRoll);
+    public boolean removeBoardRole(String removeRole) {
+        BoardRole boardRole = new BoardRole(new BoardRolePK(this, removeRole));
+        return this.getBoardRoleList().remove(boardRole);
     }
 }

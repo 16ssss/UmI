@@ -1,6 +1,7 @@
 package YOUmI.domain.board.service;
 
 
+import YOUmI.domain.board.model.dto.request.BoardRoleDeleteRequestDTO;
 import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
 import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
 import YOUmI.domain.board.model.dto.request.PagingDTO;
@@ -18,5 +19,9 @@ public interface BoardService {
     // 게시판 수정
     boolean updateBoard(int boardNo, BoardUpdateRequestDTO requestDTO);
 
+    // 게시판 조회
     PagedModel<EntityModel<BoardGetResponseDTO>> getBoardList(PagingDTO requestDTO);
+
+    // 게시판 권한 제거
+    boolean deleteBoardRole(int boardNo, BoardRoleDeleteRequestDTO requestDTO);
 }

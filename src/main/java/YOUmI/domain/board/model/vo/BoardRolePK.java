@@ -37,6 +37,6 @@ public class BoardRolePK implements Serializable {
             return false;
         }
         BoardRolePK productLikesMemberPK = (BoardRolePK) obj;
-        return board == productLikesMemberPK.getBoard() && Objects.equals(memberRole, productLikesMemberPK.getMemberRole());
+        return board.getBoardNo().equals(productLikesMemberPK.getBoard().getBoardNo()) && memberRole.equals(productLikesMemberPK.getMemberRole());
     }
 }

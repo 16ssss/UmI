@@ -1,6 +1,7 @@
 package YOUmI.domain.board.controller;
 
 import YOUmI.common.dto.ResponseDTO;
+import YOUmI.domain.board.model.dto.request.BoardRoleDeleteRequestDTO;
 import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
 import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
 import YOUmI.domain.board.model.dto.request.PagingDTO;
@@ -89,4 +90,24 @@ public class BoardController {
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @DeleteMapping(value = "/{boardNo}/authority")
+    @Operation(summary = "게시판 권한 수정", description = "어드민은 게시판의 권한을 수정할 수 있습니다.", method = "DELETE")
+    public ResponseEntity<ResponseDTO> patchBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleDeleteRequestDTO requestDTO){
+        // 서비스 호출
+        boolean result = boardService.deleteBoardRole(boardNo, requestDTO);
+
+        if(!result){
+            return ResponseEntity.badRequest().body(ResponseDTO.builder().result(FAILURE.FAILURE).build());
+        }
+
+        // 응답
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .result(SUCCESS.SUCCESS)
+                .resultObject(null)
+                .build();
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }
