@@ -37,6 +37,8 @@ public class QuestionService {
 
     private String[] types = {"EI","NS","FT","PJ"};
 
+    private String[] typeArray = {"I","E","S","N","F","T","J","P"};
+
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -195,7 +197,60 @@ public class QuestionService {
         return resultType;
     }
 
+    public Map<String, Long> getSurveyRatio(List<TestItem> items) {
 
+        Map<String, Double> tmpResult = new HashMap<>();
+
+        Map<String, Integer> totalCountMap = new HashMap<>();
+        Map<String, Integer> countMap = new HashMap<>();
+
+        for(String type : types) {
+
+            countMap.put(type, 0);
+        }
+
+        for(String type : typeArray) {
+            totalCountMap.put(type, 0);
+        }
+
+        log.info(totalCountMap.keySet().toString());
+
+        for(TestItem item : items) {
+            log.info("item seq: "+item.getSeq().toString());
+            MbtiQuestion question = questionRepository.findById(Integer.valueOf(item.getSeq())).orElseThrow();
+            String type = whichType(question.getType());
+            log.info("question.getType(): "+question.getType());
+            log.info("type:: "+type);
+            countMap.put(type, (Integer)countMap.get(type)+1);
+
+            totalCountMap.put(question.getType(), (Integer)totalCountMap.get(question.getType())+1);
+
+
+        }
+
+        for(String type : countMap.keySet()) {
+
+            for(String t : typeArray) {
+                if(type.contains(t)) {
+                    log.error("contains :"+t+" , "+type);
+                    tmpResult.put(t, Double.valueOf(totalCountMap.get(t))/Double.valueOf(countMap.get(type)));
+                }
+            }
+        }
+        log.info(countMap);
+        log.info(totalCountMap);
+        log.info(tmpResult);
+        String[] representativeType = {"E","S","T","J"};
+
+        Map<String, Long> result = new HashMap<>();
+
+        for(String type : representativeType) {
+
+            result.put(type, Math.round(tmpResult.get(type)*100.0));
+        }
+
+        return result;
+    }
 
     private String getSurveyResult(List<TestItem> items, String expected) {
 
@@ -203,8 +258,12 @@ public class QuestionService {
 
         Integer[] weights = {3,2,1,-2,-3};
         Map<String, Integer> scores = new HashMap<>();
+        Map<String, Integer> countMap = new HashMap<>();
 
-        for(String type: types) scores.put(type, 0);
+        for(String type: types) {
+            scores.put(type, 0);
+            countMap.put(type, 0);
+        }
 
         for(TestItem item: items) {
             MbtiQuestion question = questionRepository.findById(Integer.valueOf(item.getSeq())).orElseThrow();
@@ -236,7 +295,11 @@ public class QuestionService {
             }
 
             Integer weight = weights[index];
-            if(!type.split("")[0].equals(question.getType())) weight = -weight;
+            if(!type.split("")[0].equals(question.getType())) {
+                weight = -weight;
+            } else {
+                countMap.put(type, countMap.get(type) + 1);
+            }
             scores.put(type, scores.get(type)+weight);
         }
 
