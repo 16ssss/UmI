@@ -270,3 +270,5 @@ gradle/
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,eclipse,git,database,macos,windows,intellij+all
+
+**/config/**
