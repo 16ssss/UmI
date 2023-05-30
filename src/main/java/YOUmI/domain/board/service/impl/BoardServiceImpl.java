@@ -1,9 +1,6 @@
 package YOUmI.domain.board.service.impl;
 
-import YOUmI.domain.board.model.dto.request.BoardRoleDeleteRequestDTO;
-import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
-import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
-import YOUmI.domain.board.model.dto.request.PagingDTO;
+import YOUmI.domain.board.model.dto.request.*;
 import YOUmI.domain.board.model.dto.response.BoardGetResponseDTO;
 import YOUmI.domain.board.model.entity.Board;
 import YOUmI.domain.board.repository.BoardRepository;
@@ -57,8 +54,8 @@ public class BoardServiceImpl implements BoardService {
     /**
      * 게시판 권한 제거
      * @param boardNo 수정할 게시판 번호
-     * @param requestDTO 제거할 권한 목록 (게시판에 있는것만 가능)
-     * @return boolean
+     * @param requestDTO 제거할 권한 (게시판에 있는것만 가능)
+     * @return boolean 성공시 true, 실패시 false
      */
     @Override
     @Transactional
@@ -70,10 +67,29 @@ public class BoardServiceImpl implements BoardService {
             return false;
         }
         Board foundBoard = foundBoardOpt.get();
-        // 권한 목록이 게시판에 있는지 확인, 없으면 오류 발생
         String deleteRole = requestDTO.getDeleteRole();
         // 제거
         return foundBoard.removeBoardRole(deleteRole);
+    }
+
+    /**
+     * 게시판 권한 추가
+     * @param boardNo 수정할 게시판 번호
+     * @param requestDTO 추가할 권한
+     * @return boolean 성공시 true, 실패시 false
+     */
+    @Override
+    public boolean addBoardRole(int boardNo, BoardRoleAddRequestDTO requestDTO) {
+
+        Optional<Board> foundBoardOpt = boardRepository.findByBoardNoAndDeletedYN(boardNo, false);
+        if(foundBoardOpt.isEmpty()){
+            // 보드가 존재하지 않으므로 오류
+            return false;
+        }
+        Board foundBoard = foundBoardOpt.get();
+        // 권한 목록이 게시판에 있는지 확인
+        String addRole = requestDTO.getAddRole();
+        return foundBoard.addBoardRole(addRole);
     }
 
     @Override

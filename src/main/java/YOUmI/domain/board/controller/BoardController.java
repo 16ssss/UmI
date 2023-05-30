@@ -1,10 +1,7 @@
 package YOUmI.domain.board.controller;
 
 import YOUmI.common.dto.ResponseDTO;
-import YOUmI.domain.board.model.dto.request.BoardRoleDeleteRequestDTO;
-import YOUmI.domain.board.model.dto.request.BoardCreateRequestDTO;
-import YOUmI.domain.board.model.dto.request.BoardUpdateRequestDTO;
-import YOUmI.domain.board.model.dto.request.PagingDTO;
+import YOUmI.domain.board.model.dto.request.*;
 import YOUmI.domain.board.model.dto.response.BoardGetResponseDTO;
 import YOUmI.domain.board.service.BoardService;
 import YOUmI.util.enumeration.FAILURE;
@@ -92,8 +89,8 @@ public class BoardController {
     }
 
     @DeleteMapping(value = "/{boardNo}/authority")
-    @Operation(summary = "게시판 권한 수정", description = "어드민은 게시판의 권한을 수정할 수 있습니다.", method = "DELETE")
-    public ResponseEntity<ResponseDTO> patchBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleDeleteRequestDTO requestDTO){
+    @Operation(summary = "게시판 권한 제거", description = "어드민은 게시판의 권한을 제거할수 있습니다.", method = "DELETE")
+    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleDeleteRequestDTO requestDTO){
         // 서비스 호출
         boolean result = boardService.deleteBoardRole(boardNo, requestDTO);
 
@@ -109,5 +106,13 @@ public class BoardController {
 
         return ResponseEntity.ok().body(responseDTO);
     }
+
+//    @PostMapping(value = "/{boardNo}/authority")
+//    @Operation(summary = "게시판 권한 수정", description = "어드민은 게시판의 권한을 추가할 수 있습니다.", method = "POST")
+//    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleAddRequestDTO requestDTO) {
+//        // 서비스 호출
+//        boolean result = boardService.addBoardRole(boardNo, requestDTO);
+//        return
+//    }
 
 }

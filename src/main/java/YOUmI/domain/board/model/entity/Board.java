@@ -61,15 +61,16 @@ public class Board {
     /**
      * 권한 추가
      *
-     * @param boardRole 권한 추가는 관리자만 가능합니다.
+     * @param addRole 추가할 권한 명
      */
-    public void addBoardRole(String boardRole) {
-
+    public boolean addBoardRole(String addRole) {
+        BoardRole boardRole = new BoardRole(new BoardRolePK(this, addRole));
+        return this.getBoardRoleList().add(boardRole);
     }
 
     /**
      * 권한 제거
-     * 권한 제거는 관리자만 가능합니다.
+     *
      * @param removeRole 삭제할 권한 명
      */
     public boolean removeBoardRole(String removeRole) {
