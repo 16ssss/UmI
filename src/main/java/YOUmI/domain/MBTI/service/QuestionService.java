@@ -1,4 +1,4 @@
-package YOUmI.domain.MBTI.service.impl;
+package YOUmI.domain.MBTI.service;
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
