@@ -39,6 +39,18 @@ public class QuestionService {
 
     private String[] typeArray = {"I","E","S","N","F","T","J","P"};
 
+    private String[] representativeTypes = {"E","S","T","J"};
+
+    private Map<String,String> counterTypes = new HashMap<>();
+
+    public QuestionService() {
+        for(String type: types){
+            String[] splitedTypes = type.split("");
+            counterTypes.put(splitedTypes[0],splitedTypes[1]);
+            counterTypes.put(splitedTypes[1],splitedTypes[0]);
+        }
+    }
+
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -79,7 +91,6 @@ public class QuestionService {
             while(iter.hasNext()){
                 result.add(list.get(iter.next()));
             }
-            log.info("\n");
         }
 
         return result;
@@ -160,7 +171,9 @@ public class QuestionService {
                 .mbti(getSurveyResult(result.getItems(), result.getExpectedResult()))
                 .build();
 
+
         userRepository.save(user);
+
 
         surveyResultRepository.saveAll(result.getItems()
                 .stream()
@@ -169,20 +182,18 @@ public class QuestionService {
 
         result.getQuestionEvaluations().stream().forEach(evaluation -> {
             MbtiQuestion mbtiQuestion = questionRepository.findById(evaluation.getQuestionSeq()).orElse(null);
-            log.info(mbtiQuestion.toString());
             if(mbtiQuestion != null) {
                 if (evaluation.getLike()) {
                     mbtiQuestion.setLike(mbtiQuestion.getLike() + 1);
                 } else {
                     mbtiQuestion.setDislike(mbtiQuestion.getDislike() + 1);
                 }
-                log.info(mbtiQuestion.toString());
 
                 questionRepository.save(mbtiQuestion);
             }
         });
 
-        return user.getExpectedMbti();
+        return user.getMbti();
     }
 
     private String whichType(String inputType) {
@@ -199,57 +210,62 @@ public class QuestionService {
 
     public Map<String, Long> getSurveyRatio(List<TestItem> items) {
 
-        Map<String, Double> tmpResult = new HashMap<>();
+        Map<String, Integer> selectionCountMap = new HashMap<>();
 
-        Map<String, Integer> totalCountMap = new HashMap<>();
-        Map<String, Integer> countMap = new HashMap<>();
+        Map<String, Long> ratioMap = new HashMap<>();
 
-        for(String type : types) {
 
-            countMap.put(type, 0);
+        for(String type: typeArray){
+            selectionCountMap.put(type, 0);
         }
 
-        for(String type : typeArray) {
-            totalCountMap.put(type, 0);
-        }
-
-        log.info(totalCountMap.keySet().toString());
-
-        for(TestItem item : items) {
-            log.info("item seq: "+item.getSeq().toString());
+        for(TestItem item: items) {
             MbtiQuestion question = questionRepository.findById(Integer.valueOf(item.getSeq())).orElseThrow();
-            String type = whichType(question.getType());
-            log.info("question.getType(): "+question.getType());
-            log.info("type:: "+type);
-            countMap.put(type, (Integer)countMap.get(type)+1);
+            String questionType = question.getType();
+            String type = whichType(questionType);
+            String counterType = counterTypes.get(questionType);
 
-            totalCountMap.put(question.getType(), (Integer)totalCountMap.get(question.getType())+1);
-
-
-        }
-
-        for(String type : countMap.keySet()) {
-
-            for(String t : typeArray) {
-                if(type.contains(t)) {
-                    log.error("contains :"+t+" , "+type);
-                    tmpResult.put(t, Double.valueOf(totalCountMap.get(t))/Double.valueOf(countMap.get(type)));
+            Integer index = 0;
+            try {
+                switch (Integer.valueOf(item.getChoice())) {
+                    //index={0,1,2}은 해당 질문에 긍정으로 평가해 type, index={3,4}는 부정으로 평가해 counterType
+                    case -3:
+                        selectionCountMap.put(questionType, selectionCountMap.get(questionType) + 1);
+                        break;
+                    case -1:
+                        selectionCountMap.put(questionType, selectionCountMap.get(questionType) + 1);
+                        break;
+                    case 0:
+                        selectionCountMap.put(questionType, selectionCountMap.get(questionType) + 1);
+                        break;
+                    case 1:
+                        selectionCountMap.put(counterType, selectionCountMap.get(counterType) + 1);
+                        break;
+                    case 3:
+                        selectionCountMap.put(counterType, selectionCountMap.get(counterType) + 1);
+                        break;
+                    default:
+                        log.info("default switch");
                 }
+            } catch (Exception e) {
+                log.error(type, counterType);
+                log.error("switch Exception occured: ", e);
             }
+
         }
-        log.info(countMap);
-        log.info(totalCountMap);
-        log.info(tmpResult);
-        String[] representativeType = {"E","S","T","J"};
+        for(String type : representativeTypes) {
 
-        Map<String, Long> result = new HashMap<>();
+            String counterType = counterTypes.get(type);
+            Integer typeCount = selectionCountMap.get(type);
+            Integer counterTypeCount = selectionCountMap.get(counterType);
 
-        for(String type : representativeType) {
+            Double ratio = Double.valueOf(typeCount) / Double.valueOf(typeCount + counterTypeCount);
 
-            result.put(type, Math.round(tmpResult.get(type)*100.0));
+
+            ratioMap.put(type, Math.round(ratio*100.0));
         }
 
-        return result;
+        return ratioMap;
     }
 
     private String getSurveyResult(List<TestItem> items, String expected) {
@@ -260,18 +276,24 @@ public class QuestionService {
         Map<String, Integer> scores = new HashMap<>();
         Map<String, Integer> countMap = new HashMap<>();
 
+
         for(String type: types) {
             scores.put(type, 0);
             countMap.put(type, 0);
         }
 
+
         for(TestItem item: items) {
             MbtiQuestion question = questionRepository.findById(Integer.valueOf(item.getSeq())).orElseThrow();
-            String type = whichType(question.getType());
+            String questionType = question.getType();
+            String type = whichType(questionType);
+            String counterType = counterTypes.get(questionType);
+
 
             Integer index = 0;
             try {
                 switch (Integer.valueOf(item.getChoice())) {
+                    //index={0,1,2}은 해당 질문에 긍정으로 평가해 type, index={3,4}는 부정으로 평가해 counterType
                     case -3:
                         index = 0;
                         break;
@@ -291,6 +313,7 @@ public class QuestionService {
                         log.info("default switch");
                 }
             }catch(Exception e){
+                log.error(type, counterType);
                 log.error("switch Exception occured: ",e);
             }
 
@@ -304,8 +327,9 @@ public class QuestionService {
         }
 
         for(int i=0;i<4;i++){
-            result += scores.get(types[0]) > 0 ? types[i].split("")[0] : (scores.get(types[0]) == 0 ? expected.split("")[i] : types[i].split("")[1]);
+            result += scores.get(types[i]) > 0 ? types[i].split("")[0] : (scores.get(types[0]) == 0 ? expected.split("")[i] : types[i].split("")[1]);
         }
+
 
         return result;
     }
