@@ -1,3 +1,20 @@
 spring:
   config:
-    import: config/application.yaml
+    import:
+      - classpath:config-file/application-common.yml
+      - classpath:config-file/application-db.yml
+
+  application:
+    name: YoumI
+  profiles:
+    active:
+      - local
+    group:
+      local:
+        - db-local
+      oracle:
+        - db-oracle
+      prod:
+    include:
+      - db
+      - common
