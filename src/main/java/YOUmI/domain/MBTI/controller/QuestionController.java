@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import YOUmI.domain.MBTI.model.dto.*;
-import YOUmI.domain.MBTI.service.impl.QuestionService;
+import YOUmI.domain.MBTI.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
