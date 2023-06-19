@@ -180,12 +180,14 @@ public class QuestionService {
                 .map(item-> MbtiSurveyResult.builder().id(id).seq(Integer.valueOf(item.getSeq())).choice(Integer.valueOf(item.getChoice())).build())
                 .collect(Collectors.toList()));
 
-        result.getQuestionEvaluations().stream().forEach(evaluation -> {
-            MbtiQuestion mbtiQuestion = questionRepository.findById(evaluation.getQuestionSeq()).orElse(null);
-            if(mbtiQuestion != null) {
-                if (evaluation.getLike()) {
+        result.getItems().stream().forEach(item -> {
+            MbtiQuestion mbtiQuestion = questionRepository.findById(Integer.valueOf(item.getSeq())).orElse(null);
+            if( mbtiQuestion != null && !(item.getLike() && item.getDislike()) ) {
+
+                if (item.getLike()) {
                     mbtiQuestion.setLike(mbtiQuestion.getLike() + 1);
-                } else {
+                }
+                if (item.getDislike()) {
                     mbtiQuestion.setDislike(mbtiQuestion.getDislike() + 1);
                 }
 

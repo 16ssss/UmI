@@ -63,10 +63,7 @@ public class QuestionController {
     public ResponseEntity<Response> saveTestResult(@RequestBody TestResult result, @PathVariable String id) {
 
         String resultMbti = questionService.saveTestResult(id,result);
-        log.error(result.getItems().toString());
-        for(TestItem item : result.getItems()) {
-            log.error(item.toString());
-        }
+
         Map<String, Long> mbtiRatio = questionService.getSurveyRatio(result.getItems());
 
         Response response;

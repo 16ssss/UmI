@@ -32,6 +32,7 @@ public class MbtiQuestion {
     @Column(name="`like`")
     private Integer like;
 
+    @Column(name="`dislike`")
     private Integer dislike;
 
 }

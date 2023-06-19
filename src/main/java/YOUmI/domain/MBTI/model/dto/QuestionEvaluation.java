@@ -13,7 +13,9 @@ public class QuestionEvaluation {
     //문제번호
     private Integer questionSeq;
 
-    //문제평가
+    //문제 긍정 평가
     private Boolean like;
+    //문제 부정 평가
+    private Boolean dislike;
 
 }
