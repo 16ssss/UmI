@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import YOUmI.domain.MBTI.model.entity.MbtiRelation;
+import YOUmI.domain.MBTI.repository.QuestionRepositoryFromJson;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +62,13 @@ public class QuestionService {
 
     @Autowired
     private SurveyResultRepository surveyResultRepository;
+
+    @Autowired
+    private QuestionRepositoryFromJson questionRepositoryFromJson;
+
+    public MbtiRelation getMbtiRelation(String mbti) {
+        return questionRepositoryFromJson.getMbtiRelation(mbti);
+    }
 
     public List<Question> getSurveyQuestions() {
         List<Question> questions = getAllQuestions();
