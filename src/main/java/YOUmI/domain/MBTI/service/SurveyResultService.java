@@ -4,7 +4,7 @@ import YOUmI.domain.MBTI.model.dto.Statistics.CitationDto;
 import YOUmI.domain.MBTI.model.entity.MbtiSurveyResult;
 import YOUmI.domain.MBTI.repository.QuestionRepository;
 import YOUmI.domain.MBTI.repository.SurveyResultRepository;
-import YOUmI.domain.MBTI.service.impl.QuestionService;
+import YOUmI.domain.MBTI.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

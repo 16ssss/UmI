@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import YOUmI.domain.MBTI.service.impl.QuestionService;
+import YOUmI.domain.MBTI.model.dto.*;
+import YOUmI.domain.MBTI.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,14 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import YOUmI.util.enumeration.FAILURE;
 import YOUmI.util.enumeration.SUCCESS;
-import YOUmI.domain.MBTI.model.dto.MBTIQuestions;
-import YOUmI.domain.MBTI.model.dto.Question;
-import YOUmI.domain.MBTI.model.dto.Response;
-import YOUmI.domain.MBTI.model.dto.TestResult;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@RequestMapping(value="/MBTI")
+@RequestMapping(value="/MBTI")
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionController {
@@ -40,7 +37,7 @@ public class QuestionController {
     // }
 
 
-    //@CrossOrigin("*")
+    @CrossOrigin("*")
     @GetMapping("/questions")
     @ApiOperation(value="/questions", notes="검사문항을 반환합니다.")
     public ResponseEntity<Response> getMBTIQuestions() throws NoSuchAlgorithmException {
@@ -66,12 +63,18 @@ public class QuestionController {
     public ResponseEntity<Response> saveTestResult(@RequestBody TestResult result, @PathVariable String id) {
 
         String resultMbti = questionService.saveTestResult(id,result);
+        log.error(result.getItems().toString());
+        for(TestItem item : result.getItems()) {
+            log.error(item.toString());
+        }
+        Map<String, Long> mbtiRatio = questionService.getSurveyRatio(result.getItems());
+
         Response response;
 
         if(StringUtils.isNotBlank(resultMbti)) {
             response = Response.builder()
                     .result(SUCCESS.SUCCESS)
-                    .resultObject(Map.of("mbti",resultMbti))
+                    .resultObject(Map.of("mbti",resultMbti, "ratio", mbtiRatio))
                     .build();
             return ResponseEntity.ok().body(response);
         } else {
@@ -80,7 +83,6 @@ public class QuestionController {
                     .build();
             return ResponseEntity.internalServerError().body(response);
         }
-
 
     }
 
