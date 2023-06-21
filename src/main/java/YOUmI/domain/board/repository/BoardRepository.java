@@ -1,5 +1,6 @@
 package YOUmI.domain.board.repository;
 
+import YOUmI.domain.board.model.dto.response.BoardGetResponseDTO;
 import YOUmI.domain.board.model.entity.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,10 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     /**
      * ======== 조회 ========
      */
-    @Query("select b from Board b join fetch BoardRole br on b.boardNo = br.boardRollPK.board.boardNo where br.boardRollPK.memberRole in :memberRoles and b.deletedYN = :deletedYN")
-    Page<Board> findAllByMemberRole(Pageable pageable, @Param("memberRoles") List<String> memberRole, @Param("deletedYN") boolean deletedYN);
+    @Query("select new YOUmI.domain.board.model.dto.response.BoardGetResponseDTO(b.boardNo, b.boardName, b.boardDescribed) from Board b join fetch BoardRole br on b.boardNo = br.boardRollPK.board.boardNo where br.boardRollPK.memberRole in :memberRoles and b.deletedYN = :deletedYN")
+    Page<BoardGetResponseDTO> findAllByMemberRole(Pageable pageable, @Param("memberRoles") List<String> memberRole, @Param("deletedYN") boolean deletedYN);
+
+
 
 
 }

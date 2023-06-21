@@ -90,11 +90,11 @@ public class BoardController {
 
     @DeleteMapping(value = "/{boardNo}/authority")
     @Operation(summary = "게시판 권한 제거", description = "어드민은 게시판의 권한을 제거할수 있습니다.", method = "DELETE")
-    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleDeleteRequestDTO requestDTO){
+    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleDeleteRequestDTO requestDTO) {
         // 서비스 호출
         boolean result = boardService.deleteBoardRole(boardNo, requestDTO);
 
-        if(!result){
+        if (!result) {
             return ResponseEntity.badRequest().body(ResponseDTO.builder().result(FAILURE.FAILURE).build());
         }
 

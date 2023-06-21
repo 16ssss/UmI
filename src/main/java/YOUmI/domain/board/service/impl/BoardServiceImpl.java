@@ -44,11 +44,9 @@ public class BoardServiceImpl implements BoardService {
         PagedResourcesAssembler<BoardGetResponseDTO> assembler = pagingDTO.getAssembler();
 
         // 사용자가 접근할 수 있는 게시판 목록 조회
-        Page<Board> pageBoard = boardRepository.findAllByMemberRole(pageable, memberRoleList, false);
+        Page<BoardGetResponseDTO> pageBoard = boardRepository.findAllByMemberRole(pageable, memberRoleList, false);
 
-        // dto로 변환
-        List<BoardGetResponseDTO> boards = pageBoard.map(BoardGetResponseDTO::of).getContent();
-        return assembler.toModel(new PageImpl<>(boards, pageable, pageBoard.getTotalElements()));
+        return assembler.toModel(pageBoard);
     }
 
     /**
