@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import YOUmI.domain.MBTI.model.entity.MbtiRelation;
+import YOUmI.domain.MBTI.repository.QuestionRepositoryFromJson;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +62,13 @@ public class QuestionService {
 
     @Autowired
     private SurveyResultRepository surveyResultRepository;
+
+    @Autowired
+    private QuestionRepositoryFromJson questionRepositoryFromJson;
+
+    public MbtiRelation getMbtiRelation(String mbti) {
+        return questionRepositoryFromJson.getMbtiRelation(mbti);
+    }
 
     public List<Question> getSurveyQuestions() {
         List<Question> questions = getAllQuestions();
@@ -180,12 +189,14 @@ public class QuestionService {
                 .map(item-> MbtiSurveyResult.builder().id(id).seq(Integer.valueOf(item.getSeq())).choice(Integer.valueOf(item.getChoice())).build())
                 .collect(Collectors.toList()));
 
-        result.getQuestionEvaluations().stream().forEach(evaluation -> {
-            MbtiQuestion mbtiQuestion = questionRepository.findById(evaluation.getQuestionSeq()).orElse(null);
-            if(mbtiQuestion != null) {
-                if (evaluation.getLike()) {
+        result.getItems().stream().forEach(item -> {
+            MbtiQuestion mbtiQuestion = questionRepository.findById(Integer.valueOf(item.getSeq())).orElse(null);
+            if( mbtiQuestion != null && !(item.getLike() && item.getDislike()) ) {
+
+                if (item.getLike()) {
                     mbtiQuestion.setLike(mbtiQuestion.getLike() + 1);
-                } else {
+                }
+                if (item.getDislike()) {
                     mbtiQuestion.setDislike(mbtiQuestion.getDislike() + 1);
                 }
 

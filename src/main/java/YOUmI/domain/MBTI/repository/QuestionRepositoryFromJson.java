@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import YOUmI.domain.MBTI.model.entity.MbtiQuestion;
+import YOUmI.domain.MBTI.model.entity.MbtiRelation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,31 +21,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import YOUmI.domain.MBTI.model.dto.Question;
 import YOUmI.domain.MBTI.model.dto.TestResult;
 
+@Slf4j
+@Repository
 public class QuestionRepositoryFromJson {
 
-    // @Override
-    // public List<Question> getQuestions() throws Exception{
-    //     List<Question> questions = new ArrayList<>();
-    //     ObjectMapper mapper = new ObjectMapper();
-    //     Map<String,List<Question>> candidates = mapper.readValue(new File("./src/main/resources/MBTI_questions.json"), new TypeReference<Map<String,List<Question>>>() {});
+     public MbtiRelation getMbtiRelation(String mbti){
+         //List<Question> questions = new ArrayList<>();
+         ObjectMapper mapper = new ObjectMapper();
+         Map<String, MbtiRelation> relations = null;
+         try {
+             mapper.readValue(new File("./src/main/resources/MBTI_relations.json"), new TypeReference<Map<String, MbtiRelation>>() {});
+         } catch(Exception e){
+             log.error("Exception occured on getMbtiRelation\n",e);
 
-    //     for(String type : candidates.keySet()) {
-    //         Set<Integer> set = new HashSet<>();
-    //         List<Question> list = candidates.get(type);
-    //         int size = list.size();
-    //         while(set.size() < QuestionRepository.COUNT_PER_TYPE) {
-    //             SecureRandom random = SecureRandom.getInstanceStrong();
-    //             set.add(random.nextInt(size));
-    //         }
-    //         Iterator<Integer> iter = set.iterator();
-    //         while(iter.hasNext()){
-    //             questions.add(list.get(iter.next()));
-    //         }
-    //         System.out.println(questions);
-    //         System.out.println("\n");
-    //     }
-    //     return questions;
-    // }
+         }
+
+         return relations.get(mbti) != null ? relations.get(mbti) : null;
+     }
 
     // @Override
     // public void saveResult(String id, TestResult result) throws Exception {

@@ -11,7 +11,7 @@ public class TestResult {
     
     private List<TestItem> items;
 
-    private List<QuestionEvaluation> questionEvaluations;
+    //private List<QuestionEvaluation> questionEvaluations;
 
     // 프론트에서 사용자 입력
     private String username;

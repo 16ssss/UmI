@@ -1,0 +1,130 @@
+{
+  "INFP": {
+    "good": [
+      "ENFJ","ENTJ"
+    ],
+    "bad": [
+      "ISFP","ESFP","ISTP","ESTP","ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "ENFP": {
+    "good": [
+      "INFJ","INTJ"
+    ],
+    "bad": [
+      "ISFP","ESFP","ISTP","ESTP","ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "INFJ": {
+    "good": [
+      "ENFP","ENTP"
+    ],
+    "bad": [
+      "ISFP","ESFP","ISTP","ESTP","ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "ENFJ": {
+    "good": [
+      "INFP","ISFP"
+    ],
+    "bad": [
+      "ESFP","ISTP","ESTP","ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "INTJ": {
+    "good": [
+      "ENFP","ENTP"
+    ],
+    "bad": [
+      "ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "ENTJ": {
+    "good": [
+      "INFP","INTP"
+    ],
+    "bad": [
+      "ISFP","ESFP","ISTP","ESTP","ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "INTP": {
+    "good": [
+      "ENTJ","ESTJ"
+    ],
+    "bad": [
+      "ISFJ","ESFJ","ISTJ"
+    ]
+  },
+  "ENTP": {
+    "good": [
+      "INFJ","INTJ"
+    ],
+    "bad": [
+      "ISFJ","ESFJ","ISTJ","ESTJ"
+    ]
+  },
+  "ISFP": {
+    "good": [
+      "ENFJ","ESFJ","ESTJ"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ"
+    ]
+  },
+  "ESFP": {
+    "good": [
+      "ISFJ","ISTJ"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ISTP": {
+    "good": [
+      "ESFJ","ESTJ"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ESTP": {
+    "good": [
+      "ISFJ","ISTJ"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ISFJ": {
+    "good": [
+      "ESFP","ESTP"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ESFJ": {
+    "good": [
+      "ISFP","ISTP"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ISTJ": {
+    "good": [
+      "ESFP","ESTP"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  },
+  "ESTJ": {
+    "good": [
+      "INTP","ISFP","ISTP"
+    ],
+    "bad": [
+      "INFP","ENFP","INFJ","ENFJ"
+    ]
+  }
+}
