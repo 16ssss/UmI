@@ -9,7 +9,6 @@ import YOUmI.util.enumeration.FAILURE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -30,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
     /**
-     * @param pagingDTO
+     * @param pagingDTO 페이징 처리를 위한 파라미터
      * @return 페이징 처리된 Board
      * todo: 권한에 따라 접근 가능한 게시판만 조회 가능하도록 변경해야 함.
      */
@@ -51,7 +50,8 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 게시판 권한 제거
-     * @param boardNo 수정할 게시판 번호
+     *
+     * @param boardNo    수정할 게시판 번호
      * @param requestDTO 제거할 권한 (게시판에 있는것만 가능)
      * @return boolean 성공시 true, 실패시 false
      */
@@ -60,7 +60,7 @@ public class BoardServiceImpl implements BoardService {
     public boolean deleteBoardRole(int boardNo, BoardRoleDeleteRequestDTO requestDTO) {
 
         Optional<Board> foundBoardOpt = boardRepository.findByBoardNoAndDeletedYN(boardNo, false);
-        if(foundBoardOpt.isEmpty()){
+        if (foundBoardOpt.isEmpty()) {
             // 보드가 존재하지 않으므로 오류
             return false;
         }
@@ -72,21 +72,26 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 게시판 권한 추가
-     * @param boardNo 수정할 게시판 번호
+     *
+     * @param boardNo    수정할 게시판 번호
      * @param requestDTO 추가할 권한
      * @return boolean 성공시 true, 실패시 false
      */
+    @Transactional
     @Override
     public boolean addBoardRole(int boardNo, BoardRoleAddRequestDTO requestDTO) {
 
         Optional<Board> foundBoardOpt = boardRepository.findByBoardNoAndDeletedYN(boardNo, false);
-        if(foundBoardOpt.isEmpty()){
+        if (foundBoardOpt.isEmpty()) {
             // 보드가 존재하지 않으므로 오류
             return false;
         }
         Board foundBoard = foundBoardOpt.get();
         // 권한 목록이 게시판에 있는지 확인
         String addRole = requestDTO.getAddRole();
+        /* 권한이 실제로 있는 권한인지 확인해야함 */
+
+        // 모두 가능하다면 추가
         return foundBoard.addBoardRole(addRole);
     }
 

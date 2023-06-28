@@ -32,7 +32,7 @@ public class BoardController {
     @GetMapping(value = "")
     @Operation(summary = "게시판 조회", description = "일반 사용자는 권한에 맞는 게시판 리스트을 조회할 수 있습니다.", method = "GET")
     public ResponseEntity<ResponseDTO> getBoardList(
-            @PageableDefault(size = 1, page = 0) Pageable pageable
+            @PageableDefault(size = 10, page = 0) Pageable pageable
             , PagedResourcesAssembler<BoardGetResponseDTO> assembler
     ) {
         // dto로 변환
@@ -107,12 +107,24 @@ public class BoardController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-//    @PostMapping(value = "/{boardNo}/authority")
-//    @Operation(summary = "게시판 권한 수정", description = "어드민은 게시판의 권한을 추가할 수 있습니다.", method = "POST")
-//    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleAddRequestDTO requestDTO) {
-//        // 서비스 호출
-//        boolean result = boardService.addBoardRole(boardNo, requestDTO);
-//        return
-//    }
+    @PostMapping(value = "/{boardNo}/authority")
+    @Operation(summary = "게시판 권한 추가", description = "어드민은 게시판의 권한을 추가할 수 있습니다.", method = "POST")
+    public ResponseEntity<ResponseDTO> removeBoardAuth(@PathVariable int boardNo, @Validated @RequestBody BoardRoleAddRequestDTO requestDTO) {
+
+        // 서비스 호출
+        boolean result = boardService.addBoardRole(boardNo, requestDTO);
+
+        // 실패
+        if (!result) {
+            return ResponseEntity.badRequest().body(ResponseDTO.builder().result(FAILURE.FAILURE).build());
+        }
+
+        // 성공
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .result(SUCCESS.CREATED)
+                .resultObject(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
 
 }
