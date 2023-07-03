@@ -17,6 +17,9 @@ public class MbtiRelation {
     //좋은 궁합
     private List<String> good;
 
+    // 보통 궁합
+    private List<String> soso;
+
     //안좋은 궁합
     private List<String> bad;
 

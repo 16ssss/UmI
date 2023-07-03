@@ -3,6 +3,7 @@ spring:
     import:
       - classpath:config-file/application-common.yml
       - classpath:config-file/application-db.yml
+      - classpath:config-file/application-json.yml
 
   application:
     name: YoumI
@@ -12,8 +13,10 @@ spring:
     group:
       local:
         - db-local
+        - json-local
       oracle:
         - db-oracle
+        - json-oracle
       prod:
     include:
       - db
