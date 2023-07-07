@@ -3,6 +3,9 @@ package YOUmI.domain.post.model.entity;
 
 import YOUmI.common.converter.BooleanToYNConverter;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
@@ -22,6 +25,7 @@ import javax.persistence.*;
         allocationSize = 1
 
 )
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
@@ -34,8 +38,9 @@ public class Post {
     @Column(name = "user_no")
     private Integer userNo;
 
-    @Column(name = "posted_date")
+    @Column(name = "posted_date", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     private java.util.Date postedDate;
 
     @Column(name = "post_hits")
@@ -49,6 +54,7 @@ public class Post {
 
     @Column(name = "modified_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
     private java.util.Date modifiedDate;
 
     @Column(name = "delete_yn")
