@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import YOUmI.domain.MBTI.model.dto.*;
+import YOUmI.domain.MBTI.model.entity.MbtiRelation;
 import YOUmI.domain.MBTI.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,18 +64,17 @@ public class QuestionController {
     public ResponseEntity<Response> saveTestResult(@RequestBody TestResult result, @PathVariable String id) {
 
         String resultMbti = questionService.saveTestResult(id,result);
-        log.error(result.getItems().toString());
-        for(TestItem item : result.getItems()) {
-            log.error(item.toString());
-        }
+
         Map<String, Long> mbtiRatio = questionService.getSurveyRatio(result.getItems());
+
+        MbtiRelation relation = questionService.getMbtiRelation(resultMbti);
 
         Response response;
 
         if(StringUtils.isNotBlank(resultMbti)) {
             response = Response.builder()
                     .result(SUCCESS.SUCCESS)
-                    .resultObject(Map.of("mbti",resultMbti, "ratio", mbtiRatio))
+                    .resultObject(Map.of("mbti",resultMbti, "relation",relation,"ratio", mbtiRatio))
                     .build();
             return ResponseEntity.ok().body(response);
         } else {
