@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -23,20 +25,20 @@ import javax.persistence.*;
         sequenceName = "POST_NO_SEQ",
         initialValue = 1,
         allocationSize = 1
-
 )
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
     @Column(name = "post_no")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQUENCE")
     private Integer postNo;
 
-    @Column(name ="board_no")
+    @Column(name = "board_no")
     private int boardNo;
 
-    @Column(name = "user_no")
-    private Integer userNo;
+    @Column(name = "user_Id")
+    private String userId;
 
     @Column(name = "posted_date", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,6 +52,7 @@ public class Post {
     private String postTitle;
 
     @Column(name = "post_content")
+    @Lob
     private String postContent;
 
     @Column(name = "modified_date")
@@ -67,5 +70,14 @@ public class Post {
 
     @Column(name = "writer_ip")
     private String writerIp;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostFile> postFileList = new ArrayList<>();
+
+    // 파일 추가
+    public boolean addPostFile(PostFile postFile) {
+        postFile.setPost(this);
+        return this.getPostFileList().add(postFile);
+    }
 
 }
