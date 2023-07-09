@@ -43,10 +43,12 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         // 이미지 저장
-        for (MultipartFile file : requestDTO.getImages()) {
-            // 파일 생성
-            PostFile postFile = postFileService.saveFile(file);
-            newPost.addPostFile(postFile);
+        if(requestDTO.getImages() != null) {
+            for (MultipartFile file : requestDTO.getImages()) {
+                // 파일 생성
+                PostFile postFile = postFileService.saveFile(file);
+                newPost.addPostFile(postFile);
+            }
         }
 
         return postRepository.save(newPost).getPostNo();

@@ -26,11 +26,13 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "일반 사용자는 권한에 맞는 게시판에서 게시글을 생성할 수 있습니다.", method = "POST")
     public ResponseEntity<ResponseDTO> createPost(PostCreateRequestDTO requestDTO, HttpServletRequest request) {
 
-        // 파일이 이미지파일인지 확인 (PostFile에서 검사해야하는가? Post에서 검사해야하는가?)
-        for (MultipartFile file : requestDTO.getImages()) {
-            if (!file.getContentType().startsWith("image")) {
-                return ResponseEntity.badRequest()
-                        .body(ResponseDTO.builder().result(FAILURE.NOT_IMAGE_FILE).build());
+        if(requestDTO.getImages() != null) {
+            // 파일이 이미지파일인지 확인 (PostFile에서 검사해야하는가? Post에서 검사해야하는가?)
+            for (MultipartFile file : requestDTO.getImages()) {
+                if (!file.getContentType().startsWith("image")) {
+                    return ResponseEntity.badRequest()
+                            .body(ResponseDTO.builder().result(FAILURE.NOT_IMAGE_FILE).build());
+                }
             }
         }
 
