@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 
 @RestController
@@ -24,7 +25,7 @@ public class PostController {
 
     @PostMapping(value = "")
     @Operation(summary = "게시글 생성", description = "일반 사용자는 권한에 맞는 게시판에서 게시글을 생성할 수 있습니다.", method = "POST")
-    public ResponseEntity<ResponseDTO> createPost(PostCreateRequestDTO requestDTO, HttpServletRequest request) {
+    public ResponseEntity<ResponseDTO> createPost(@Valid PostCreateRequestDTO requestDTO, HttpServletRequest request) {
 
         if(requestDTO.getImages() != null) {
             // 파일이 이미지파일인지 확인 (PostFile에서 검사해야하는가? Post에서 검사해야하는가?)
@@ -59,7 +60,7 @@ public class PostController {
 
     @PutMapping("/{postNo}")
     @Operation(summary = "게시글 수정", description = "일반 사용자는 자신이 작성한 글을 수정할 수 있습니다.", method = "PUT")
-    public ResponseEntity<ResponseDTO> updatePost(@PathVariable int postNo, @RequestBody PostUpdateRequestDTO requestDTO) {
+    public ResponseEntity<ResponseDTO> updatePost(@PathVariable int postNo, @RequestBody @Valid PostUpdateRequestDTO requestDTO) {
         /* 현재 접속한 유저 ID 확인 */
         String id = "22"; // 임시
 

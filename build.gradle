@@ -61,7 +61,8 @@ dependencies {
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
 	implementation "com.oracle.database.jdbc:ucp"
 
-
+	/* 유효성 검사 관련 종속성 */
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
